@@ -36,7 +36,13 @@ const handleMessage = async (client, message) => {
         switch (message.type) {
             // Sessions
             case "join-session": {
-                const sessionId = (message.data && message.data.sessionId) || Utils.createId();
+                var sessionId = (message.data && message.data.sessionId) || Utils.createId();
+
+                var videoToPlayURL;
+                if(Utils.isValidYoutubeURL(sessionId)) {
+                    videoToPlayURL = sessionId;
+                    sessionId = Utils.createId();
+                }
 
                 client.joinSession(sessions, sessionId);
 
@@ -71,6 +77,10 @@ const handleMessage = async (client, message) => {
                 client.sendResponse(response, originalMessage, client.SendType.Single);
 
                 broadcastClients(client.session);
+
+                if(videoToPlayURL != null) {
+                    handleMessage(client ,JSON.stringify({ type: "add-video-to-queue", data: { url: videoToPlayURL } }))
+                }
 
                 break;
             }
