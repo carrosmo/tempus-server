@@ -123,13 +123,16 @@ const handleMessage = async (client, message) => {
 
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
 
-                video.timestamp = timestampAdjusted;
+                video.timestamp = timestamp;
                 video.playbackSpeed = playbackSpeed;
                 video.isPaused = isPaused;
 
                 sessionData.lastStateUpdateTime = message.date;
 
                 if (firstLoad) video.hasLoaded = true;
+
+                const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
+                stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
 
                 console.log("Video timestamp:", timestampAdjusted, timeForMessage);
 
