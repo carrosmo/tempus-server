@@ -113,7 +113,7 @@ const handleMessage = async (client, message) => {
 
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
 
-                video.timestamp = timestampAdjusted;
+                video.timestamp = timestamp;
                 video.playbackSpeed = playbackSpeed;
                 video.isPaused = isPaused;
 
@@ -126,7 +126,7 @@ const handleMessage = async (client, message) => {
 
                 console.log("Video timestamp:", timestampAdjusted, timeForMessage);
 
-                client.sendResponse({ state: stateToSend }, originalMessage, client.SendType.Broadcast);
+                client.sendResponse({ state: client.sessionData() }, originalMessage, client.SendType.Broadcast);
 
                 break;
             }
