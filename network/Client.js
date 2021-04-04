@@ -25,6 +25,8 @@ class Client {
     }
 
     send(data) {
+        // var s = JSON.stringify(data);
+        // setTimeout(() => this.conn.send(s), 1000);
         this.conn.send(JSON.stringify(data));
     }
 

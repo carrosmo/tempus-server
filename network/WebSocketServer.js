@@ -109,11 +109,11 @@ const handleMessage = async (client, message) => {
                 // const totalTimeForMessage = timeForMessage * 2; // Assume it takes the same amount of time to be sent back
 
                 const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
-                const timestampAdjusted = timestamp + timeForMessage;
+                const timestampAdjusted = timestamp + timeForMessage * 2;
 
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
 
-                video.timestamp = timestamp;
+                video.timestamp = timestampAdjusted;
                 video.playbackSpeed = playbackSpeed;
                 video.isPaused = isPaused;
 
