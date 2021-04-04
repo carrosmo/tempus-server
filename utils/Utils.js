@@ -27,6 +27,10 @@ class Utils {
         return;
     }
 
+    static isValidYoutubeURL(url) {
+        return this.getVideoId(url) != null;
+    }
+
     static isValidHttpUrl(string) {
         let url;
 
