@@ -115,15 +115,18 @@ const handleMessage = async (client, message) => {
                 //     }, dur);
                 // }
 
-                const timeForMessage = Math.abs(Date.now() - message.date) / 1000;
-                // const totalTimeForMessage = timeForMessage * 2; // Assume it takes the same amount of time to be sent back
+                // const timeForMessage = Math.abs(Date.now() - message.date) / 1000;
+                // // const totalTimeForMessage = timeForMessage * 2; // Assume it takes the same amount of time to be sent back
 
-                const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
-                const timestampAdjusted = timestamp + timeForMessage * 2;
+                // const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
+                // const timestampAdjusted = timestamp + timeForMessage * 2;
 
                 console.log(new Date());
 
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
+
+                const timezoneOffset = new Date().getTimezoneOffset() / 60;
+                console.log("Timezone offset:", timezoneOffset)
 
                 video.timestamp = timestamp;//timestampAdjusted;
                 video.playbackSpeed = playbackSpeed;
@@ -131,12 +134,12 @@ const handleMessage = async (client, message) => {
 
                 sessionData.lastStateUpdateTime = message.date;
 
-                if (firstLoad) video.hasLoaded = true;
+                // if (firstLoad) video.hasLoaded = true;
 
-                const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
-                stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
+                // const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
+                // stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
 
-                console.log("Video timestamp:", timestamp, timeForMessage);
+                console.log("Video timestamp:", timestamp);
 
                 client.sendResponse({ state: client.sessionData() }, originalMessage, client.SendType.Broadcast);
 
