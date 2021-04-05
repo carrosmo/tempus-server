@@ -104,6 +104,7 @@ class Client {
         const res = {
             type: originalMessage.type,
             success: false,
+            date: Date.now(),
 
             originalMessage: originalMessage,
             error: erroMessage,

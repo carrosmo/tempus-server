@@ -132,12 +132,12 @@ const handleMessage = async (client, message) => {
 
                 sessionData.lastStateUpdateTime = message.date;
 
-                if (firstLoad) video.hasLoaded = true;
+                // if (firstLoad) video.hasLoaded = true;
 
-                const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
-                stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
+                // const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
+                // stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
 
-                console.log("Video timestamp:", timestamp, timeForMessage);
+                console.log("Video timestamp:", timestamp);
 
                 client.sendResponse({ state: client.sessionData() }, originalMessage, client.SendType.Broadcast);
 
