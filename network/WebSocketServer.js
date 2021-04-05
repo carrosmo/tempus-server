@@ -121,6 +121,8 @@ const handleMessage = async (client, message) => {
                 const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
                 const timestampAdjusted = timestamp + timeForMessage * 2;
 
+                console.log(new Date());
+
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
 
                 video.timestamp = timestamp;//timestampAdjusted;
@@ -145,32 +147,21 @@ const handleMessage = async (client, message) => {
                 if (!client.session)
                     return client.sendError("You are not in a session", originalMessage);
 
+                const { timestamp } = message.data;
+
                 const sessionData = client.sessionData();
                 const video = sessionData.queue[sessionData.currentQueueIndex];
+                if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
 
-                const timeForMessage = Date.now() - message.date;
+                video.timestamp = timestamp;
 
-                console.log(timeForMessage);
+                sessionData.lastStateUpdateTime = message.date;
+
+                // Don't send anything, just update the time on the server
 
                 break;
             }
-
-            // case "play-video": {
-            //     if (!client.session)
-            //         return client.sendError("You are not in a session", originalMessage);
-
-            //     const videoId = Utils.getVideoId(message.data.videoUrl);
-
-
-            //     client.session.videoData.currentVideoId = videoId;
-
-            //     console.log("Playing video '%s'", videoId);
-
-            //     client.sendResponse({ currentVideoId: message.data.videoId }, message, client.SendType.Broadcast);
-
-            //     break;
-            // }
-
+            
             case "play-video-from-queue": {
                 try {
                     const response = playVideoFromQueue(client, { queueIndex: message.data.queueIndex });
