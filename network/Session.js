@@ -32,7 +32,7 @@ class Session
         const res = {
             type: originalMessage.type,
             success: true,
-            date: now(),
+            date: Utils.now(),
 
             originalMessage: originalMessage,
             data: response

@@ -1,3 +1,4 @@
+const Utils = require("../utils/Utils");
 const Session = require("./Session");
 
 class Client {
@@ -81,7 +82,7 @@ class Client {
         const res = {
             type: originalMessage.type,
             success: true,
-            date: now(),
+            date: Utils.now(),
 
             originalMessage: originalMessage,
             data: response
@@ -105,7 +106,7 @@ class Client {
         const res = {
             type: originalMessage.type,
             success: false,
-            date: now(),
+            date: Utils.now(),
 
             originalMessage: originalMessage,
             error: erroMessage,

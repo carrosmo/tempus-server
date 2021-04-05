@@ -27,6 +27,14 @@ class Utils {
         return;
     }
 
+    static now = () => {
+        var today = new Date();
+        var offset = today.getTimezoneOffset() - today.stdTimezoneOffset()
+        var d = new Date(); 
+        d.setMinutes(d.getMinutes() + offset);
+        return d.getTime();
+    }
+
     static isValidYoutubeURL(url) {
         return this.getVideoId(url) != null;
     }

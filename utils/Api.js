@@ -1,3 +1,5 @@
+const Utils = require("../utils/Utils");
+
 const playVideoFromQueue = (client, { queueIndex }) => {
     if (!client.session)
         throw "You are not in a session";
@@ -18,7 +20,7 @@ const playVideoFromQueue = (client, { queueIndex }) => {
     video.playbackSpeed = 1;
     video.isPaused = false;
 
-    sessionData.lastStateUpdateTime = now();
+    sessionData.lastStateUpdateTime = Utils.now();
 
     console.log("[Tempus] Playing video '%s' at index", sessionData.queue[queueIndex].title, queueIndex);
 

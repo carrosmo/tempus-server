@@ -9,24 +9,6 @@ const pingTime = process.env.WEBSOCKET_PING_TIME || 30000;
 
 var sessions = new Map();
 
-Date.prototype.stdTimezoneOffset = function () {
-    var jan = new Date(this.getFullYear(), 0, 1);
-    var jul = new Date(this.getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-}
-
-Date.prototype.isDstObserved = function () {
-    return this.getTimezoneOffset() < this.stdTimezoneOffset();
-}
-
-const now = () => {
-    var today = new Date();
-    var offset = today.getTimezoneOffset() - today.stdTimezoneOffset()
-    var d = new Date(); 
-    d.setMinutes(d.getMinutes() + offset);
-    return d.getTime();
-}
-
 const onConnection = (conn) => {
     // Create client
     const client = new Client(conn, Utils.createId());
@@ -68,11 +50,11 @@ const handleMessage = async (client, message) => {
                 const { lastStateUpdateTime } = client.sessionData();
 
                 if (lastStateUpdateTime != null) {
-                    const passedTime = (now() - client.sessionData().lastStateUpdateTime) / 1000; // In seconds
+                    const passedTime = (Utils.now() - client.sessionData().lastStateUpdateTime) / 1000; // In seconds
                     
                     const video = client.session.getPlayingVideo();
                     if (video) {
-                        client.sessionData().lastStateUpdateTime = now();
+                        client.sessionData().lastStateUpdateTime = Utils.now();
                         if (!video.isPaused) {
                             const oldTimestamp = video.timestamp;
                             const newTimestamp = oldTimestamp + passedTime * video.playbackSpeed;
@@ -110,9 +92,9 @@ const handleMessage = async (client, message) => {
                 if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
 
                 if (sessionData.lastStateUpdateTime != null) {
-                    const passedTime = (now() - sessionData.lastStateUpdateTime) / 1000; // In seconds
+                    const passedTime = (Utils.now() - sessionData.lastStateUpdateTime) / 1000; // In seconds
                         
-                    sessionData.lastStateUpdateTime = now();
+                    sessionData.lastStateUpdateTime = Utils.now();
                     if (!video.isPaused) 
                         video.timestamp += passedTime;
                 } else {
@@ -154,7 +136,7 @@ const handleMessage = async (client, message) => {
                 //     }, dur);
                 // }
 
-                // const timeForMessage = Math.abs(now() - message.date) / 1000;
+                // const timeForMessage = Math.abs(Utils.now() - message.date) / 1000;
                 // // const totalTimeForMessage = timeForMessage * 2; // Assume it takes the same amount of time to be sent back
 
                 // const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
