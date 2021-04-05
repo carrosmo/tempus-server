@@ -95,7 +95,7 @@ const handleMessage = async (client, message) => {
                 broadcastClients(client.session);
 
                 if(videoToPlayURL != null) {
-                    handleMessage(client ,JSON.stringify({ type: "add-video-to-queue", data: { url: videoToPlayURL } }))
+                    handleMessage(client, JSON.stringify({ type: "add-video-to-queue", data: { url: videoToPlayURL } }))
                 }
 
                 break;
@@ -109,11 +109,15 @@ const handleMessage = async (client, message) => {
                 const video = sessionData.queue[sessionData.currentQueueIndex];
                 if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
 
-                const passedTime = (now() - sessionData.lastStateUpdateTime) / 1000; // In seconds
-                    
-                sessionData.lastStateUpdateTime = now();
-                if (!video.isPaused) 
-                    video.timestamp += passedTime;
+                if (sessionData.lastStateUpdateTime != null) {
+                    const passedTime = (now() - sessionData.lastStateUpdateTime) / 1000; // In seconds
+                        
+                    sessionData.lastStateUpdateTime = now();
+                    if (!video.isPaused) 
+                        video.timestamp += passedTime;
+                } else {
+                    console.log("No last state update time exists");
+                }
 
                 client.sendResponse({ timestamp: video.timestamp }, originalMessage, client.SendType.Single);
 
@@ -124,7 +128,7 @@ const handleMessage = async (client, message) => {
                 if (!client.session)
                     return client.sendError("You are not in a session", originalMessage);
 
-                const { timestamp, playbackSpeed, isPaused, firstLoad } = message.data;
+                const { timestamp, playbackSpeed, isPaused } = message.data;
 
                 const sessionData = client.sessionData();
                 const video = sessionData.queue[sessionData.currentQueueIndex];
@@ -171,7 +175,7 @@ const handleMessage = async (client, message) => {
                 // const stateToSend = JSON.parse(JSON.stringify(client.sessionData()));
                 // stateToSend.queue[sessionData.currentQueueIndex].timestamp = timestamp; 
 
-                console.log("Video timestamp:", timestamp);
+                //console.log("Video timestamp:", timestamp);
 
                 client.sendResponse({ state: client.sessionData() }, originalMessage, client.SendType.Broadcast);
 

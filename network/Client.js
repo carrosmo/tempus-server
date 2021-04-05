@@ -81,7 +81,7 @@ class Client {
         const res = {
             type: originalMessage.type,
             success: true,
-            date: Date.now(),
+            date: now(),
 
             originalMessage: originalMessage,
             data: response
@@ -105,7 +105,7 @@ class Client {
         const res = {
             type: originalMessage.type,
             success: false,
-            date: Date.now(),
+            date: now(),
 
             originalMessage: originalMessage,
             error: erroMessage,

@@ -18,7 +18,7 @@ const playVideoFromQueue = (client, { queueIndex }) => {
     video.playbackSpeed = 1;
     video.isPaused = false;
 
-    sessionData.lastStateUpdateTime = Date.now();
+    sessionData.lastStateUpdateTime = now();
 
     console.log("[Tempus] Playing video '%s' at index", sessionData.queue[queueIndex].title, queueIndex);
 
