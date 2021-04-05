@@ -9,6 +9,24 @@ const pingTime = process.env.WEBSOCKET_PING_TIME || 30000;
 
 var sessions = new Map();
 
+Date.prototype.stdTimezoneOffset = function () {
+    var jan = new Date(this.getFullYear(), 0, 1);
+    var jul = new Date(this.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+
+Date.prototype.isDstObserved = function () {
+    return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
+
+const now = () => {
+    var today = new Date();
+    var offset = today.getTimezoneOffset() - today.stdTimezoneOffset()
+    var d = new Date(); 
+    d.setMinutes(d.getMinutes() + offset);
+    return d.getTime();
+}
+
 const onConnection = (conn) => {
     // Create client
     const client = new Client(conn, Utils.createId());
@@ -50,18 +68,16 @@ const handleMessage = async (client, message) => {
                 const { lastStateUpdateTime } = client.sessionData();
 
                 if (lastStateUpdateTime != null) {
-                    const passedTime = (Date.now() - client.sessionData().lastStateUpdateTime) / 1000; // In seconds
+                    const passedTime = (now() - client.sessionData().lastStateUpdateTime) / 1000; // In seconds
                     
                     const video = client.session.getPlayingVideo();
                     if (video) {
-                        client.sessionData().lastStateUpdateTime = Date.now();
+                        client.sessionData().lastStateUpdateTime = now();
                         if (!video.isPaused) {
                             const oldTimestamp = video.timestamp;
                             const newTimestamp = oldTimestamp + passedTime * video.playbackSpeed;
                             video.timestamp = newTimestamp;
-    
-                            client.sessionData().lastStateUpdateTime = Date.now();
-    
+        
                             console.log("Updated video timestamp from %s to %s", oldTimestamp, newTimestamp);
                         }
                     } 
@@ -81,6 +97,25 @@ const handleMessage = async (client, message) => {
                 if(videoToPlayURL != null) {
                     handleMessage(client ,JSON.stringify({ type: "add-video-to-queue", data: { url: videoToPlayURL } }))
                 }
+
+                break;
+            }
+
+            case "give-me-timestamp": {
+                if (!client.session)
+                    return client.sendError("You are not in a session", originalMessage);
+
+                const sessionData = client.sessionData();
+                const video = sessionData.queue[sessionData.currentQueueIndex];
+                if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
+
+                const passedTime = (now() - sessionData.lastStateUpdateTime) / 1000; // In seconds
+                    
+                sessionData.lastStateUpdateTime = now();
+                if (!video.isPaused) 
+                    video.timestamp += passedTime;
+
+                client.sendResponse({ timestamp: video.timestamp }, originalMessage, client.SendType.Single);
 
                 break;
             }
@@ -115,7 +150,7 @@ const handleMessage = async (client, message) => {
                 //     }, dur);
                 // }
 
-                // const timeForMessage = Math.abs(Date.now() - message.date) / 1000;
+                // const timeForMessage = Math.abs(now() - message.date) / 1000;
                 // // const totalTimeForMessage = timeForMessage * 2; // Assume it takes the same amount of time to be sent back
 
                 // const timestampDiff = ((timestamp + timeForMessage) - video.timestamp);
@@ -124,9 +159,6 @@ const handleMessage = async (client, message) => {
                 console.log(new Date());
 
                 // console.log("The server timestamp is %s off. Acutal client value is", timestampDiff, timestamp);
-
-                const timezoneOffset = new Date().getTimezoneOffset() / 60;
-                console.log("Timezone offset:", timezoneOffset)
 
                 video.timestamp = timestamp;//timestampAdjusted;
                 video.playbackSpeed = playbackSpeed;
@@ -156,6 +188,8 @@ const handleMessage = async (client, message) => {
                 const video = sessionData.queue[sessionData.currentQueueIndex];
                 if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
 
+                console.log("Updating timestamp", video.timestamp, timestamp, message.date);
+
                 video.timestamp = timestamp;
 
                 sessionData.lastStateUpdateTime = message.date;
@@ -164,7 +198,23 @@ const handleMessage = async (client, message) => {
 
                 break;
             }
-            
+
+            case "video-loaded": {
+                if (!client.session)
+                    return client.sendError("You are not in a session", originalMessage);
+
+                client.isVideoLoaded = true;
+
+                const clients = [...client.session.clients];
+
+                if (clients.filter(c => c.isVideoLoaded === true).length == clients.length) {
+                    // All clients has the video loaded. Wait a little bit just to make sure
+                    setTimeout(() => client.sendResponse({}, { type: "play-video" }, client.SendType.Broadcast), 1000);
+                }
+                
+                break;
+            }
+
             case "play-video-from-queue": {
                 try {
                     const response = playVideoFromQueue(client, { queueIndex: message.data.queueIndex });

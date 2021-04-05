@@ -5,6 +5,7 @@ class Client {
         this.conn = conn;
         this.id = id;
         this.isAdmin = false;
+        this.isVideoLoaded = false;
 
         this.isAlive = true;
 
