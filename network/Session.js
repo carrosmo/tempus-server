@@ -1,3 +1,5 @@
+const Utils = require("../utils/Utils");
+
 class Session
 {
     constructor(id)
@@ -6,6 +8,7 @@ class Session
         this.clients = new Set; 
 
         this.timestampTimer = null;
+        this.videoStartTimeout = null;
 
         this.data = {
             currentQueueIndex: 0,

@@ -24,6 +24,16 @@ const playVideoFromQueue = (client, { queueIndex }) => {
 
     console.log("[Tempus] Playing video '%s' at index", sessionData.queue[queueIndex].title, queueIndex);
 
+    // Start a video start timer to avoid problems if a single client fails to load the vidoe
+    if (client.session.videoStartTimeout == null) {
+        client.session.videoStartTimeout = setTimeout(() => {
+            console.log("Timeout. Starting video anyways")
+            client.sendResponse({}, { type: "play-video" }, client.SendType.Broadcast);
+
+            client.session.videoStartTimeout = null;
+        }, 5000);
+    }
+
     return { state: sessionData };
 }
 module.exports.playVideoFromQueue = playVideoFromQueue;

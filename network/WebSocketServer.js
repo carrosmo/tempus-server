@@ -174,8 +174,6 @@ const handleMessage = async (client, message) => {
                 const video = sessionData.queue[sessionData.currentQueueIndex];
                 if (!video) return client.sendError("[Tempus] That video doesn't exist in the queue", originalMessage);
 
-                console.log("Updating timestamp", video.timestamp, timestamp, message.date);
-
                 video.timestamp = timestamp;
 
                 sessionData.lastStateUpdateTime = message.date;
@@ -193,9 +191,26 @@ const handleMessage = async (client, message) => {
 
                 const clients = [...client.session.clients];
 
+                console.log("Client ready...");
+
                 if (clients.filter(c => c.isVideoLoaded === true).length == clients.length) {
-                    // All clients has the video loaded. Wait a little bit just to make sure
+                    // All clients has the video loaded.
+                    clearTimeout(client.session.videoStartTimeout);
+                    client.session.videoStartTimeout = null;
+
+                    console.log("All clients ready. Playing video");
+                    
+                    // Wait a little bit just to make sure
                     setTimeout(() => client.sendResponse({}, { type: "play-video" }, client.SendType.Broadcast), 1000);
+                } else {
+                    // Start the timer to avoid problems if a single client fails to load the vidoe
+                    if (client.session.videoStartTimeout == null) {
+                        client.session.videoStartTimeout = setTimeout(() => {
+                            console.log("Timeout. Starting video anyways")
+                            client.sendResponse({}, { type: "play-video" }, client.SendType.Broadcast)
+                            client.session.videoStartTimeout = null;
+                        }, 5000);
+                    }
                 }
                 
                 break;
