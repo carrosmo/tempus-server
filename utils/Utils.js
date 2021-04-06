@@ -29,7 +29,7 @@ class Utils {
 
     static now = () => {
         var today = new Date();
-        var offset = today.getTimezoneOffset() - today.stdTimezoneOffset()
+        var offset = today.getTimezoneOffset();// - today.stdTimezoneOffset()
         var d = new Date(); 
         d.setMinutes(d.getMinutes() + offset);
         return d.getTime();
