@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "nodemon server.js",
         "start": "node server.js",
-        "live-reload": "node live-reload.js"
+        "live-reload": "node live-reload.js",
+        "deploy": "node ../../Node.js/ludvigdb-real/deploy.js"
     },
     "author": "",
     "license": "ISC",

@@ -12,6 +12,9 @@ const playVideoFromQueue = (client, { queueIndex }) => {
     if (queueIndex >= sessionData.queue.length)
         throw "That video doesn't exist in the queue";
 
+    // Reset loaded variable for all clients in session
+    client.session.clients.forEach(cli => cli.isVideoLoaded = false);
+
     sessionData.currentQueueIndex = queueIndex;
     
     // Reset video state
