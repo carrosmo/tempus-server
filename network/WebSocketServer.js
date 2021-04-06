@@ -216,6 +216,11 @@ const handleMessage = async (client, message) => {
                 break;
             }
 
+            case "now": {
+                client.sendResponse({ now: Utils.now(), date: new Date().toISOString() }, originalMessage, client.SendType.Single);
+                break;
+            }
+
             case "play-video-from-queue": {
                 try {
                     const response = playVideoFromQueue(client, { queueIndex: message.data.queueIndex });
