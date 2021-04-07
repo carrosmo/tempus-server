@@ -2,7 +2,15 @@ const puppeteer = require('puppeteer');
 const Utils = require("../utils/Utils");
 
 const scrapeResults = async (query) => {
-    const browser = await puppeteer.launch({ headless: true });
+    /*
+
+    puppeteer.launch({
+    executablePath: process.env.CHROMIUM_PATH,
+    args: ['--no-sandbox'], // This was important. Can't remember why
+    });
+
+    */
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     const num = 10;
 
