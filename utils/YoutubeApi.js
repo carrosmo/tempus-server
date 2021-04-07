@@ -13,6 +13,15 @@ const getVideoDetailsPure = async (videoId) => {
     return json;
 }
 
+const getSearchResultsPure = async (query) => {
+    const youtubeKey = process.env.YOUTUBE_KEY;
+    const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${query}&type=video&key=${youtubeKey}`, {
+        headers: { "Accept": "application/json" }
+    });
+
+    return await response.json();
+}
+
 const getVideoDetails = async (videoId) => {
     const videoData = await getVideoDetailsPure(videoId);
     if (!videoData.items) return;
@@ -44,4 +53,9 @@ const getVideoDetails = async (videoId) => {
     };
 }
 
+const getSearchResults = async (query) => {
+    return getSearchResultsPure(query);
+}
+
 module.exports.getVideoDetails = getVideoDetails;
+module.exports.getSearchResults = getSearchResults;

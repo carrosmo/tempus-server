@@ -263,6 +263,21 @@ const handleMessage = async (client, message) => {
                 break;
             }
 
+            case "get-search-results": {
+                if (!client.session)
+                    return client.sendError("You are not in a session", originalMessage);
+                
+                const query = message.data.query;
+                const result = await YoutubeApi.getSearchResults(query);
+                console.log(result);
+                client.sendResponse({results: result}, originalMessage, client.SendType.Broadcast);    
+                break;
+                
+                // const results = YoutubeApi.getSearchResults(query);
+
+                // client.sendResponse({results: results}, originalMessage, client.SendType.Broadcast);    
+            }
+
             case "broadcast-clients": {
 
                 broadcastClients(client);
