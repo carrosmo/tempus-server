@@ -13,11 +13,12 @@
     "license": "ISC",
     "dependencies": {
         "@thebigbear/live-reload": "^1.0.3",
+        "cheerio": "^1.0.0-rc.5",
+        "dom-parser": "^0.1.6",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-ws-routes": "^1.1.0",
         "node-fetch": "^2.6.1",
-        "puppeteer": "^8.0.0",
         "ws": "^7.2.1"
     }
 }

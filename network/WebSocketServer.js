@@ -283,7 +283,7 @@ const handleMessage = async (client, message) => {
                 const query = message.data.query;
                 const result = await ScrapeYoutube.scrapeResults(query);
                 client.sendResponse({results: result}, originalMessage, client.SendType.Broadcast);
-                console.log(result)
+
                 break;
             }
 
