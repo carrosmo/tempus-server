@@ -23,6 +23,7 @@ const playVideoFromQueue = (client, { queueIndex }) => {
     video.timestamp = 0;
     video.playbackSpeed = 1;
     video.isPaused = false;
+    video.hasEnded = false;
 
     sessionData.lastStateUpdateTime = Utils.now();
 

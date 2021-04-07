@@ -124,7 +124,7 @@ const handleMessage = async (client, message) => {
                 if (!client.session)
                     return client.sendError("You are not in a session", originalMessage);
 
-                const { timestamp, playbackSpeed, isPaused } = message.data;
+                const { timestamp, playbackSpeed, isPaused, hasEnded } = message.data;
 
                 const sessionData = client.sessionData();
                 const video = sessionData.queue[sessionData.currentQueueIndex];
@@ -133,6 +133,7 @@ const handleMessage = async (client, message) => {
                 video.timestamp = timestamp;
                 video.playbackSpeed = playbackSpeed;
                 video.isPaused = isPaused;
+                video.hasEnded = hasEnded;
 
                 sessionData.lastStateUpdateTime = message.date;
 
@@ -165,6 +166,7 @@ const handleMessage = async (client, message) => {
                     return client.sendError("You are not in a session", originalMessage);
 
                 client.isVideoLoaded = true;
+                client.session.getPlayingVideo().hasEnded = false;
 
                 const clients = [...client.session.clients];
 
@@ -206,6 +208,16 @@ const handleMessage = async (client, message) => {
                 } catch (error) {
                     client.sendError(error, originalMessage);
                 }
+
+                break;
+            }
+
+            case "video-ended": {
+                if (!client.session) return client.sendError("You are not in a session", originalMessage);
+
+                client.session.getPlayingVideo().hasEnded = true;
+
+                client.sendResponse({ state: client.sessionData() }, { type: "state-update" }, client.SendType.Broadcast);
 
                 break;
             }
