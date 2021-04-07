@@ -1,4 +1,5 @@
 const Utils = require("../utils/Utils");
+const YoutubeApi = require("./YoutubeApi");
 
 const playVideoFromQueue = (client, { queueIndex }) => {
     if (!client.session)
@@ -40,3 +41,42 @@ const playVideoFromQueue = (client, { queueIndex }) => {
     return { state: sessionData };
 }
 module.exports.playVideoFromQueue = playVideoFromQueue;
+
+const addVideoToQueue = async (client, { url, playIfFirstVideo = true }) => {
+    if (!client.session) throw "You are not in a session";
+
+    if (!url) throw "No video url specified";
+    
+    const videoId = Utils.getVideoId(url);
+    if (!videoId) throw "Not a youtube video";
+    
+    // Check for duplicates
+    if (client.sessionData().queue.find(video => video.id === videoId))
+        throw "That video already exists in the queue"
+    
+    const videoData = await YoutubeApi.getVideoDetails(videoId);
+    if (!videoData) throw "Failed to get video details";
+    
+    // Create a video object to add to the queue 
+    const video = { ...videoData, url };
+
+    client.sessionData().queue.push(video);
+    
+    const addToQueueResponse = { video, queue: client.sessionData().queue };
+    var playVideoFromQueueResponse = null;
+    
+    // Play the video if it's the first in the queue
+    if (client.sessionData().queue.length == 1 && playIfFirstVideo) {
+        try {
+            playVideoFromQueueResponse = playVideoFromQueue(client, { queueIndex: 0 });
+        } catch (error) {
+            if (typeof error === "object")
+                console.error(error);
+    
+            throw error;
+        }
+    }
+
+    return { addToQueueResponse, playVideoFromQueueResponse };
+}
+module.exports.addVideoToQueue = addVideoToQueue;
