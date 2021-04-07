@@ -282,6 +282,8 @@ const handleMessage = async (client, message) => {
                 
                 const query = message.data.query;
                 const result = await ScrapeYoutube.scrapeResults(query);
+                if (!result) return client.sendError("Failed to get search results", originalMessage);
+                
                 client.sendResponse({results: result}, originalMessage, client.SendType.Broadcast);
 
                 break;
