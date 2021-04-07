@@ -17,6 +17,7 @@
         "express": "^4.17.1",
         "express-ws-routes": "^1.1.0",
         "node-fetch": "^2.6.1",
+        "puppeteer": "^8.0.0",
         "ws": "^7.2.1"
     }
 }

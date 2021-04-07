@@ -3,6 +3,7 @@ const Client = require("./Client");
 const Utils = require("../utils/Utils");
 
 const YoutubeApi = require("../utils/YoutubeApi");
+const ScrapeYoutube = require("../utils/ScrapeYoutube");
 const { playVideoFromQueue } = require("../utils/Api");
 
 const pingTime = process.env.WEBSOCKET_PING_TIME || 30000;
@@ -312,14 +313,10 @@ const handleMessage = async (client, message) => {
                     return client.sendError("You are not in a session", originalMessage);
                 
                 const query = message.data.query;
-                const result = await YoutubeApi.getSearchResults(query);
-                console.log(result);
-                client.sendResponse({results: result}, originalMessage, client.SendType.Broadcast);    
+                const result = await ScrapeYoutube.scrapeResults(query);
+                client.sendResponse({results: result}, originalMessage, client.SendType.Broadcast);
+                console.log(result)
                 break;
-                
-                // const results = YoutubeApi.getSearchResults(query);
-
-                // client.sendResponse({results: results}, originalMessage, client.SendType.Broadcast);    
             }
 
             // case "get-video-metadata": {
