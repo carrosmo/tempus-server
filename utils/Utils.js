@@ -29,8 +29,8 @@ class Utils {
 
     static now = () => {
         var today = new Date();
-        var offset = today.getTimezoneOffset();// - today.stdTimezoneOffset()
-        var d = new Date(); 
+        var offset = today.getTimezoneOffset(); // - today.stdTimezoneOffset()
+        var d = new Date();
         d.setMinutes(d.getMinutes() + offset);
         return d.getTime();
     }
@@ -49,6 +49,14 @@ class Utils {
         }
 
         return url.protocol === "http:" || url.protocol === "https:";
+    }
+
+    // https://stackoverflow.com/a/66494926 for future reference
+    static randomColor(string) {
+        let stringUniqueHash = [...string].reduce((acc, char) => {
+            return char.charCodeAt(0) + ((acc << 5) - acc);
+        }, 0);
+        return `hsl(${stringUniqueHash % 360}, 95%, 35%)`;
     }
 }
 

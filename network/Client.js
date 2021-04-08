@@ -7,6 +7,8 @@ class Client {
         this.id = id;
         this.isAdmin = false;
         this.isVideoLoaded = false;
+        this.name = id;
+        this.color = Utils.randomColor(this.name);
 
         this.isAlive = true;
 
@@ -16,11 +18,11 @@ class Client {
 
         this.SendType = {
             Single: 0,
-            Broadcast: 1, 
+            Broadcast: 1,
         }
     }
 
-    sessionData() { 
+    sessionData() {
         if (!this.session) return;
 
         return this.session.data;
@@ -97,7 +99,7 @@ class Client {
 
         if (!this.session) return;
 
-        if (sendType === this.SendType.Single) 
+        if (sendType === this.SendType.Single)
             this.send(res);
         else if (sendType === this.SendType.Broadcast)
             this.session.broadcast(res);
