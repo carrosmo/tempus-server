@@ -109,9 +109,11 @@ const handleMessage = async(client, message) => {
                     const newName = message.data.name;
                     client.name = newName;
                     client.color = Utils.randomColor(client.name);
-                    logEvent(client.session, oldName, newName, "name-update", "", client);
 
-                    console.log(`Client ${client.id}'s new name is: ${client.name}`)
+                    if (oldName !== newName) {
+                        logEvent(client.session, oldName, newName, "name-update", "", client);
+                        console.log(`Client ${client.id}'s new name is: ${client.name}`)
+                    }
 
                     break;
                 }
