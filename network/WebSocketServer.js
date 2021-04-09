@@ -419,8 +419,12 @@ function broadcastClients(session) {
     session.broadcastResponse(response, { type: "broadcast-clients" });
 }
 
+let options = {
+        timeZone: 'Europe/Stockholm'
+    },
+    formatter = new Intl.DateTimeFormat([], options);
 const logEvent = (session, oldName = "", name, event, video = "", client) => {
-    session.broadcastResponse({ oldName: oldName, name: name, video: video, event: event, date: `${new Date().getHours()}:${new Date().getMinutes()}`, color: client.color }, { type: "log-event" });
+    session.broadcastResponse({ oldName: oldName, name: name, video: video, event: event, color: client.color }, { type: "log-event" });
 }
 
 const playNextVideo = (client, message = { type: "play-next-video" }) => {
