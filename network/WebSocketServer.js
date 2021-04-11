@@ -118,6 +118,15 @@ const handleMessage = async(client, message) => {
                     break;
                 }
 
+            case "chat-message":
+                {
+                    if (!client.session)
+                        return client.sendError("You are not in a session", originalMessage);
+
+                    logEvent(client.session, null, client.name, "chat-message", "", client, message.data.message)
+                    break;
+                }
+
             case "give-me-timestamp":
                 {
                     if (!client.session)
@@ -419,8 +428,8 @@ function broadcastClients(session) {
     session.broadcastResponse(response, { type: "broadcast-clients" });
 }
 
-const logEvent = (session, oldName = "", name, event, video = "", client) => {
-    session.broadcastResponse({ oldName: oldName, name: name, video: video, event: event, color: client.color }, { type: "log-event" });
+const logEvent = (session, oldName = "", name, event, video = "", client, message = "") => {
+    session.broadcastResponse({ oldName: oldName, name: name, video: video, event: event, color: client.color, message: message }, { type: "log-event" });
 }
 
 const playNextVideo = (client, message = { type: "play-next-video" }) => {
