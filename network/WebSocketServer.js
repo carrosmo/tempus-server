@@ -429,6 +429,10 @@ function broadcastClients(session) {
 }
 
 const logEvent = (session, oldName = "", name, event, video = "", client, message = "") => {
+    if (message == "vibe" || message == "vibing") {
+        message = `<img src='https://media.tenor.com/images/f093e051245a0f0676af057a47708432/tenor.gif'>`;
+    }
+
     session.broadcastResponse({ oldName: oldName, name: name, video: video, event: event, color: client.color, message: message }, { type: "log-event" });
 }
 
