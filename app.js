@@ -1,13 +1,15 @@
-const expressWs = require('express-ws-routes');
-const express = expressWs.extendExpress();
+const expressWs = require('express');
+
+const ws = require("ws").Server;
+const fs = require("fs");
+
+const https = require("https");
 
 const dotenv = require("dotenv");
 
 // Load env
 dotenv.config({ path: __dirname + "/config/config.env" });
 dotenv.config({ path: __dirname + "/config/secrets.env" });
-
-const router = express.Router();
 
 // Setup the websocket log level
 global.WebSocketLogLevels = {
@@ -34,7 +36,7 @@ module.exports = () => {
     // Connect to the database, then start http and WebSocket server
     module.startServer = async (absolutePath = "/tempus") => {
         const port = 1235;
-        
+
         var server = https.createServer({
             key: fs.readFileSync(process.env.PRIV_KEY),
             cert: fs.readFileSync(process.env.CERT),
@@ -56,8 +58,6 @@ module.exports = () => {
         
         // Set up http routes here 
     }
-
-    module.router = router;
 
     return module; 
 }
