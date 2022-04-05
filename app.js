@@ -33,12 +33,26 @@ module.exports = () => {
 
     // Connect to the database, then start http and WebSocket server
     module.startServer = async (absolutePath = "/tempus") => {
-        // Connect to database here
+        const port = 1235;
+        
+        var server = https.createServer({
+            key: fs.readFileSync(process.env.PRIV_KEY),
+            cert: fs.readFileSync(process.env.CERT),
+        });
+
+        server.listen(port, () => console.log("Handlingslista running on port", port))
 
         const WebSocketServer = require('./network/WebSocketServer');
 
+        var wss = new ws({
+            server: server,
+            path: absolutePath
+        });
+
+        wss.on("connection", WebSocketServer.onConnection);
+
         console.log("[Tempus] Started websocket server at path '%s'", absolutePath)
-        router.websocket("/", (info, cb) => cb(WebSocketServer.onConnection));
+        //router.websocket("/", (info, cb) => cb(WebSocketServer.onConnection));
         
         // Set up http routes here 
     }
