@@ -6,8 +6,8 @@
     "scripts": {
         "dev": "nodemon server.js",
         "start": "node server.js",
+        "start-linux": "sudo node server.js",
         "live-reload": "node live-reload.js",
-        "deploy": "node ../../Node.js/ludvigdb-real/deploy.js"
     },
     "author": "",
     "license": "ISC",
@@ -15,8 +15,6 @@
         "@thebigbear/live-reload": "^1.0.3",
         "dom-parser": "^0.1.6",
         "dotenv": "^8.6.0",
-        "express": "^4.17.1",
-        "express-ws-routes": "^1.1.0",
         "node-fetch": "^2.6.1",
         "ws": "^7.5.7"
     }
