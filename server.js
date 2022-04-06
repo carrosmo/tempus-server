@@ -35,7 +35,7 @@ const port = 1235;
 
 var server = https.createServer({
     key: fs.readFileSync(process.env.LUDVIGDB_PRIV_KEY_PATH),
-    cert: fs.readFileSync(process.env.LUDVIGB_CERT_PATH),
+    cert: fs.readFileSync(process.env.LUDVIGDB_CERT_PATH),
 });
 
 server.listen(port, () => console.log("[Tempus] Started websocket server at port", port));
