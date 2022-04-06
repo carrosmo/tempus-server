@@ -7,7 +7,7 @@
         "dev": "nodemon server.js",
         "start": "node server.js",
         "start-linux": "sudo node server.js",
-        "live-reload": "node live-reload.js",
+        "live-reload": "node live-reload.js"
     },
     "author": "",
     "license": "ISC",
