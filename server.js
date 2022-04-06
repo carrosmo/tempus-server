@@ -44,7 +44,7 @@ const WebSocketServer = require('./network/WebSocketServer');
 
 var wss = new ws({
     server: server,
-    path: absolutePath
+    path: "/tempus"
 });
 
 wss.on("connection", WebSocketServer.onConnection);
